@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -38,7 +39,14 @@ func main() {
 			panic(err)
 		}
 
-		isCreated := CreateOutputFile(string(url[:]))
+		urlStr := string(url[:])
+
+		// 空行など URL の先頭が http でない場合は無視する
+		if !strings.HasPrefix(urlStr, "http") {
+			continue
+		}
+
+		isCreated := CreateOutputFile(urlStr)
 
 		// WEBページを取得できなかった場合は終了する
 		if isCreated < 0 {
