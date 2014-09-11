@@ -83,6 +83,7 @@ func ExtractFileName(url string) string {
 		panic(err)
 	}
 	filename := reg.ReplaceAllString(url, "")
+	filename = ReplaceInvalidChars(filename)
 
 	return filename
 }
@@ -104,4 +105,17 @@ func FetchBody(url string) []byte {
 		panic(err)
 	}
 	return body
+}
+
+// ファイル名に使用禁止文字が含まれている場合は _ に置換する
+func ReplaceInvalidChars(filename string) string {
+	expr := "[/|>|<|?|:|\"|\\|/*|/||;]"
+
+	reg, err := regexp.Compile(expr)
+	if err != nil {
+		panic(err)
+	}
+	filename = reg.ReplaceAllString(filename, "_")
+
+	return filename
 }
